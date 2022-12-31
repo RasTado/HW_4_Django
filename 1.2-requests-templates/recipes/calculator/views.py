@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 DATA = {
@@ -16,8 +17,18 @@ DATA = {
         'сыр, ломтик': 1,
         'помидор, ломтик': 1,
     },
-    # можете добавить свои рецепты ;)
+    # можете добавить свои рецепты;)
 }
+
+
+def recipe(request, food):
+    servings = int(request.GET.get('servings', 1))
+    context = {
+        'recipe': {},
+    }
+    for ing, amount in DATA[food].items():
+        context['recipe'][ing] = servings * amount
+    return render(request, 'calculator/index.html', context=context)
 
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
