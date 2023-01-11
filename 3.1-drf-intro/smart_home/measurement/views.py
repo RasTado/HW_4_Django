@@ -1,7 +1,7 @@
 # TODO: опишите необходимые обработчики, рекомендуется использовать generics APIView классы:
 # TODO: ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from .models import Sensor, Measurement
