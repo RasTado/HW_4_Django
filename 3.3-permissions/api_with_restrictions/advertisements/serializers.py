@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from advertisements.models import Advertisement
+from .models import Advertisement, Favorites
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -11,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'first_name',
                   'last_name',)
+        read_only_fields = ('username', )
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
@@ -41,5 +42,17 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         """Метод для валидации. Вызывается при создании и обновлении."""
 
         # TODO: добавьте требуемую валидацию
+        if ((self.context['request'].method == 'PATCH' and data.get('status') == 'OPEN') or
+                (self.context['request'].method == 'POST')):
+            if Advertisement.objects.filter(creator=self.context["request"].user, status="OPEN").count() >= 10:
+                raise serializers.ValidationError('Cannot have more than 10 active advertisements')
 
         return data
+
+        class FavoritesSerializer(serializers.ModelSerializer):
+            favorite_id = AdvertisementSerializer(read_only=True)
+
+            class Meta:
+                model = Favorites
+                fields = ['favorite_id']
+                read_only_fields = ['user']
